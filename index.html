@@ -696,7 +696,15 @@ a:active,button:active,summary:active,select:active,[role="button"]:active{trans
   sel.forEach(function(q){document.querySelectorAll(q).forEach(function(el){if(el.closest('.hero')||el.closest('.site-nav'))return;el.classList.add('reveal');if(far.indexOf(q)>-1)el.classList.add('from-far');els.push(el)})});
   document.querySelectorAll('.concept-grid,.service-list').forEach(function(g){Array.prototype.forEach.call(g.children,function(c,i){c.setAttribute('data-d',(i*110)+'ms')})});
   document.querySelectorAll('.contact').forEach(function(c){var n=0;Array.prototype.forEach.call(c.children,function(k){if(k.classList.contains('reveal')){k.setAttribute('data-d',(n*90)+'ms');n++}})});
-  function drop(el){var r=el.getBoundingClientRect();var dy=-(r.bottom+40);el.style.transition='none';el.style.transform='translate3d(0,'+dy+'px,0)';el.style.clipPath='inset('+(-dy)+'px -40px -40px -40px)';void el.offsetHeight;el.style.transition='';var d=parseInt(el.getAttribute('data-d')||'0',10);el.style.transitionDelay=d+'ms,'+d+'ms,'+d+'ms';el.classList.add('visible');el.style.transform='';el.style.clipPath='inset(0px -40px -40px -40px)';setTimeout(function(){el.style.clipPath='';el.style.transitionDelay=''},1200+d);}
+  function drop(el){var r=el.getBoundingClientRect();var dy=-(r.bottom+30);var d=parseInt(el.getAttribute('data-d')||'0',10);
+    el.classList.add('visible');
+    if(!el.animate){return}
+    var cs=getComputedStyle(el);if(cs.position==='static')el.style.position='relative';
+    el.style.zIndex='30';
+    var dur=750+Math.min(1,Math.abs(dy)/innerHeight)*550;
+    var a=el.animate([{transform:'translate3d(0,'+dy+'px,0)',easing:'cubic-bezier(.55,.06,.85,.5)'},{transform:'translate3d(0,0,0)',offset:.72,easing:'cubic-bezier(.2,.7,.4,1)'},{transform:'translate3d(0,-9px,0)',offset:.86,easing:'cubic-bezier(.6,0,.9,.5)'},{transform:'translate3d(0,0,0)'}],{duration:dur,delay:d,fill:'backwards'});
+    a.onfinish=a.oncancel=function(){el.style.zIndex='';if(cs.position==='static')el.style.position=''};
+  }
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){drop(e.target);io.unobserve(e.target)}})},{threshold:.06,rootMargin:'0px 0px -6% 0px'});
   function start(){els.forEach(function(el){io.observe(el)})}
   var boot=document.getElementById('boot'),t0=Date.now();
