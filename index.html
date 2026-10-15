@@ -719,7 +719,7 @@ a:active,button:active,summary:active,select:active,[role="button"]:active{trans
     var cs=getComputedStyle(el),restore=[];
     if(cs.display==='inline'){el.style.display='inline-block';restore.push(function(){el.style.display=''})}
     if(cs.position==='static'){el.style.position='relative';restore.push(function(){el.style.position=''})}
-    el.style.zIndex='30';restore.push(function(){el.style.zIndex=''});
+    window.__dz=((window.__dz||0)+1)%4000;el.style.zIndex=String(30+window.__dz);restore.push(function(){el.style.zIndex=''});
     clipAnc(el).forEach(function(p){
       p.__ovc=(p.__ovc||0)+1;
       if(p.__ovc===1){p.__ox=p.style.overflowX;p.__oy=p.style.overflowY;var s=getComputedStyle(p);var ox=(s.overflowX==='hidden'||s.overflowX==='clip')?'clip':s.overflowX;p.style.overflowX=ox;p.style.overflowY='visible'}
@@ -742,8 +742,8 @@ a:active,button:active,summary:active,select:active,[role="button"]:active{trans
     var seen=new Set();targets=targets.filter(function(t){if(seen.has(t))return false;seen.add(t);return true});
     var io=new IntersectionObserver(function(es){
       var enter=es.filter(function(e){if(e.target.__dropA&&e.target.__dropA.playState==='running')return false;var was=e.target.__in;e.target.__in=e.isIntersecting;return e.isIntersecting&&!was});
-      enter.sort(function(a,b){return a.boundingClientRect.top-b.boundingClientRect.top});
-      enter.forEach(function(e,i){play(e.target,Math.min(i*70,350))});
+      enter.sort(function(a,b){return b.boundingClientRect.top-a.boundingClientRect.top});
+      enter.forEach(function(e,i){play(e.target,Math.min(i*70,700))});
     },{threshold:0,rootMargin:'0px 0px -30px 0px'});
     targets.forEach(function(t){io.observe(t)});
     window.__dropTargets=targets.length;
