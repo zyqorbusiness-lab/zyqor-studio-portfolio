@@ -697,11 +697,14 @@ a:active,button:active,summary:active,select:active,[role="button"]:active{trans
   function infSet(){var s=new Set();try{document.getAnimations().forEach(function(a){try{if(a.effect&&a.effect.getComputedTiming().iterations===Infinity&&a.effect.target)s.add(a.effect.target)}catch(e){}})}catch(e){}return s}
   function hasText(el){for(var n=el.firstChild;n;n=n.nextSibling){if(n.nodeType===3&&/\S/.test(n.nodeValue))return true}return false}
   var targets=[];
+  function isCard(el,cs){var bg=cs.backgroundColor;var hasBg=bg&&bg!=='rgba(0, 0, 0, 0)'&&bg!=='transparent';var hasImg=cs.backgroundImage!=='none';var b=Math.min(parseFloat(cs.borderTopWidth)||0,parseFloat(cs.borderBottomWidth)||0,parseFloat(cs.borderLeftWidth)||0,parseFloat(cs.borderRightWidth)||0);if(!(hasBg||hasImg||b>0))return false;var r=el.getBoundingClientRect();if(r.height<8||r.height>innerHeight*0.7||r.width<8)return false;return /\S/.test(el.textContent||'')||!!el.querySelector('img,svg,video')}
   function walk(el,inf){
     if(el.nodeType!==1||SKIP.test(el.tagName)||inf.has(el))return;
     if(el.getAttribute('aria-hidden')==='true'||el.hasAttribute('hidden'))return;
     var cs=getComputedStyle(el);
     if(cs.display==='none'||cs.position==='fixed'||cs.position==='sticky'||cs.visibility==='hidden')return;
+    var tg=el.tagName;
+    if(tg==='BUTTON'||isCard(el,cs)){if(el.getBoundingClientRect().width>8)targets.push(el);return}
     var tag=el.tagName;
     if(MEDIA.test(tag)||(tag==='svg'&&el.getBoundingClientRect().width>=48)){if(!(el.closest&&el.closest('button,a')&&tag==='svg'))targets.push(el);return}
     if(tag==='svg')return;
